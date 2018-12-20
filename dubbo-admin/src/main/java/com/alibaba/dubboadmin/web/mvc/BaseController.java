@@ -71,6 +71,12 @@ public class BaseController {
         model.addAttribute("helpUrl", WebConstants.HELP_URL);
         model.addAttribute("_type", type);
 
+        String service = (String) model.asMap().get("service");
+        if (service != null && !"".equals(service)) {
+            service = service.replaceAll("@", "/");
+            model.addAttribute("service", service);
+        }
+
     }
 
     public String getMessage(String key, Object... args) {

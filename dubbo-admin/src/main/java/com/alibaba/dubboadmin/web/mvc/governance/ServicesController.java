@@ -16,14 +16,7 @@
  */
 package com.alibaba.dubboadmin.web.mvc.governance;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.TreeSet;
+import java.util.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -156,9 +149,47 @@ public class ServicesController extends BaseController {
             model.addAttribute("providerServices", newProviders);
             model.addAttribute("consumerServices", newConsumers);
         }
+
+        dupService(model);
+
         return "governance/screen/services/index";
     }
 
+    private void dupService(Model model) {
+        List<String> providerServices = (List<String>) model.asMap().get("providerServices");
+        List<String> consumerServices = (List<String>) model.asMap().get("consumerServices");
+        Set<String> allServices = (Set<String>) model.asMap().get("services");
+
+        List<String> providers = new ArrayList<>();
+        List<String> consumers = new ArrayList<>();
+        Set<String> services = new TreeSet<>();
+
+        Iterator<String> iterPovider = providerServices.iterator();
+        while (iterPovider.hasNext()) {
+            String s = iterPovider.next();
+            s = s.replaceAll("/", "@");
+            providers.add(s);
+        }
+
+        Iterator<String> iterConsumer = consumerServices.iterator();
+        while (iterConsumer.hasNext()) {
+            String s = iterConsumer.next();
+            s = s.replaceAll("/", "@");
+            consumers.add(s);
+        }
+
+        Iterator<String> iterServices = allServices.iterator();
+        while (iterServices.hasNext()) {
+            String s = iterServices.next();
+            s = s.replaceAll("/", "@");
+            services.add(s);
+        }
+
+        model.addAttribute("providerServices", providers);
+        model.addAttribute("consumerServices", consumers);
+        model.addAttribute("services", services);
+
+    }
 
     @RequestMapping("/{ids}/shield")
     public String shield(@PathVariable("ids") Long[] ids, HttpServletRequest request, HttpServletResponse response, Model model) throws Exception {
